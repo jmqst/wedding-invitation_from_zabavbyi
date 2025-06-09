@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Приглашение на свадьбу</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.6/babel.min.js"></script>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.20.6/babel.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Great_Vibes&family=Playfair+Display:wght@400;700&display=swap');
     body {
@@ -78,6 +78,7 @@
         attendance: 'yes'
       });
       const [submitted, setSubmitted] = React.useState(false);
+      const [error, setError] = React.useState('');
       const [timeLeft, setTimeLeft] = React.useState({
         days: 0,
         hours: 0,
@@ -110,11 +111,17 @@
 
       const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setError('');
       };
 
       const handleSubmit = (e) => {
         e.preventDefault();
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbx1Fnpxxsd0UkfPiv52wlePwgn_GBKZsfmzn4_LH4Kw8zrUkeGlayvc61V4-DGnrTkm/exec'; // Замените на ваш Web app URL из Google Apps Script
+        if (!formData.name || !formData.phone) {
+          setError('Пожалуйста, заполните все поля.');
+          return;
+        }
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx1Fnpxxsd0UkfPiv52wlePwgn_GBKZsfmzn4_LH4Kw8zrUkeGlayvc61V4-DGnrTkm/exec'; // Замените на ваш Web app URL
         const form = new FormData();
         form.append('Name', formData.name);
         form.append('Phone', formData.phone);
@@ -122,21 +129,21 @@
 
         fetch(scriptURL, {
           method: 'POST',
-          body: form
+          body: form,
+          mode: 'no-cors' // Добавляем no-cors для обхода ограничений
         })
-          .then(response => response.json())
-          .then(data => {
-            if (data.result === 'success') {
-              console.log('Form submitted successfully:', formData);
-              setSubmitted(true);
-            } else {
-              console.error('Error submitting form:', data.error);
-              alert('Ошибка при отправке формы. Попробуйте снова.');
+          .then(response => {
+            // В режиме no-cors response.json() недоступен, поэтому проверяем status
+            if (response.type === 'opaque') {
+              console.log('Form submitted, but response is opaque due to no-cors mode');
+              setSubmitted(true); // Предполагаем успех, так как no-cors не даёт деталей
+              setError('');
             }
+            return { result: 'success' }; // Заглушка для no-cors
           })
           .catch(error => {
-            console.error('Error:', error);
-            alert('Ошибка при отправке формы. Проверьте подключение.');
+            console.error('Fetch error:', error);
+            setError('Ошибка при отправке формы: ' + error.message);
           });
       };
 
@@ -149,9 +156,9 @@
             </h1>
             <h2 className="text-3xl text-gray-800 mb-6">Asap rocky  & Rihanna</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Забавные тим приглашаем вас на наше торжество, которое состоитсятся
+            Забавные тим приглашаем вас на наше торжество, которое состоитсятся
               <br />
-              <strong>15 июля 2025 года</strong> в ресторане "Bloom Room" в 16:00.
+              <strong>15 июля 2025 года</strong> в ресторане "Романтика" в 16:00.
             </p>
           </section>
 
@@ -202,8 +209,8 @@
                 className="photo-frame rounded-lg w-full"
               />
               <img
-                src="1.jpg"
-                alt="Молодожены 2"
+                src="https://via.placeholder.com/400x300?text=Любовь"
+                alt="1.jpg"
                 className="photo-frame rounded-lg w-full"
               />
             </div>
@@ -220,6 +227,9 @@
               </div>
             ) : (
               <div className="max-w-md mx-auto px-4 space-y-6">
+                {error && (
+                  <div className="text-red-600 text-center">{error}</div>
+                )}
                 <input
                   type="text"
                   name="name"
