@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Приглашение на свадьбу</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.6/babel.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great_Vibes&family=Playfair+Display:wght@400;700&display=swap');
+    body {
+      font-family: 'Playfair Display', serif;
+      background: linear-gradient(to bottom, #f3e7e9, #e3eeff);
+    }
+    .heart {
+      position: absolute;
+      width: 100px;
+      height: 90px;
+      background: rgba(255, 192, 203, 0.3);
+      transform: rotate(-45deg);
+      animation: float 6s ease-in-out infinite;
+    }
+    .heart:before,
+    .heart:after {
+      content: "";
+      width: 100px;
+      height: 90px;
+      position: absolute;
+      background: rgba(255, 192, 203, 0.3);
+      border-radius: 50px;
+    }
+    .heart:before {
+      top: -50px;
+      left: 0;
+    }
+    .heart:after {
+      left: 50px;
+      top: 0;
+    }
+    @keyframes float {
+      0% { transform: translateY(0) rotate(-45deg); opacity: 0.8; }
+      50% { transform: translateY(-20px) rotate(-45deg); opacity: 0.4; }
+      100% { transform: translateY(0) rotate(-45deg); opacity: 0.8; }
+    }
+    .photo-frame {
+      border: 10px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transform: rotate(-2deg);
+    }
+    .photo-frame:nth-child(even) {
+      transform: rotate(2deg);
+    }
+    .countdown-box {
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #f9a8d4;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center relative overflow-x-hidden">
+  <!-- Floating hearts -->
+  <div class="heart" style="top: 10%; left: 5%;"></div>
+  <div class="heart" style="top: 20%; right: 10%;"></div>
+  <div class="heart" style="bottom: 15%; left: 15%;"></div>
+  <div class="heart" style="bottom: 25%; right: 20%;"></div>
+
+  <div id="root" class="w-full max-w-4xl mx-auto"></div>
+
+  <script type="text/babel">
+    function WeddingInvitation() {
+      const [formData, setFormData] = React.useState({
+        name: '',
+        phone: '',
+        attendance: 'yes'
+      });
+      const [submitted, setSubmitted] = React.useState(false);
+      const [timeLeft, setTimeLeft] = React.useState({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+      });
+
+      const weddingDate = new Date('2025-07-15T16:00:00+05:00');
+
+      const calculateTimeLeft = () => {
+        const now = new Date();
+        const difference = weddingDate - now;
+
+        if (difference > 0) {
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+          const minutes = Math.floor((difference / (1000 * 60)) % 60);
+          const seconds = Math.floor((difference / 1000) % 60);
+          setTimeLeft({ days, hours, minutes, seconds });
+        } else {
+          setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        }
+      };
+
+      React.useEffect(() => {
+        calculateTimeLeft();
+        const timer = setInterval(calculateTimeLeft, 1000);
+        return () => clearInterval(timer);
+      }, []);
+
+      const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzrIcuB9lwbfAgvFl0JrOuzWKq4Q9MWNPpeaSd1ekOjLJkmF7fKzlJUWHOGYhu5SLYb/exec'; // Замените на ваш Web app URL из Google Apps Script
+        const form = new FormData();
+        form.append('Name', formData.name);
+        form.append('Phone', formData.phone);
+        form.append('Attendance', formData.attendance === 'yes' ? 'Смогу быть' : 'Не смогу');
+
+        fetch(scriptURL, {
+          method: 'POST',
+          body: form
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.result === 'success') {
+              console.log('Form submitted successfully:', formData);
+              setSubmitted(true);
+            } else {
+              console.error('Error submitting form:', data.error);
+              alert('Ошибка при отправке формы. Попробуйте снова.');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при отправке формы. Проверьте подключение.');
+          });
+      };
+
+      return (
+        <div className="w-full max-w-4xl mx-auto">
+          {/* Header Section */}
+          <section className="text-center py-16">
+            <h1 className="text-5xl font-['Great_Vibes'] text-pink-600 mb-4">
+              Приглашение на свадьбу
+            </h1>
+            <h2 className="text-3xl text-gray-800 mb-6">Asap rocky  & Rihanna</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Забавные тим приглашаем вас на наше торжество, которое состоитсятся
+              <br />
+              <strong>15 июля 2025 года</strong> в ресторане "Bloom Room" в 16:00.
+            </p>
+          </section>
+
+          {/* Countdown Section */}
+          <section className="text-center py-12">
+            <h3 className="text-3xl font-['Great_Vibes'] text-pink-600 mb-6">
+              До нашей свадьбы осталось
+            </h3>
+            <div className="countdown-box inline-flex space-x-4 mx-auto">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-800">{timeLeft.days}</div>
+                <div className="text-sm text-gray-600">Дней</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-800">{timeLeft.hours}</div>
+                <div className="text-sm text-gray-600">Часов</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-800">{timeLeft.minutes}</div>
+                <div className="text-sm text-gray-600">Минут</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-800">{timeLeft.seconds}</div>
+                <div className="text-sm text-gray-600">Секунд</div>
+              </div>
+            </div>
+          </section>
+
+          {/* Our Story Section */}
+          <section className="py-16 bg-white bg-opacity-90 rounded-lg shadow-2xl mx-4">
+            <h3 className="text-3xl font-['Great_Vibes'] text-pink-600 text-center mb-8">
+              Наша история
+            </h3>
+            <p className="text-gray-600 max-w-2xl mx-auto text-center px-4">
+            My white ho got big titties, she remind me of Sydney Sweeney Sydney Sweeney, Sydney Sweeney
+            </p>
+          </section>
+
+          {/* Photos Section */}
+          <section className="py-16">
+            <h3 className="text-3xl font-['Great_Vibes'] text-pink-600 text-center mb-12">
+              Моменты нашей любви
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+              <img
+                src="2.jpeg"
+                alt="Молодожены 1"
+                className="photo-frame rounded-lg w-full"
+              />
+              <img
+                src="1.jpg"
+                alt="Молодожены 2"
+                className="photo-frame rounded-lg w-full"
+              />
+            </div>
+          </section>
+
+          {/* RSVP Form Section */}
+          <section className="py-16 bg-white bg-opacity-90 rounded-lg shadow-2xl mx-4 mb-16">
+            <h3 className="text-3xl font-['Great_Vibes'] text-pink-600 text-center mb-8">
+              Подтвердите ваше присутствие
+            </h3>
+            {submitted ? (
+              <div className="text-green-600 text-center animate-pulse text-lg">
+                Спасибо за ваш ответ! Мы ждем вас!
+              </div>
+            ) : (
+              <div className="max-w-md mx-auto px-4 space-y-6">
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Ваше имя"
+                  className="w-full p-3 border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  required
+                />
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Ваш номер телефона"
+                  className="w-full p-3 border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  required
+                />
+                <div className="flex justify-center space-x-6">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="attendance"
+                      value="yes"
+                      checked={formData.attendance === 'yes'}
+                      onChange={handleChange}
+                      className="mr-2"
+                    />
+                    Смогу быть
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="attendance"
+                      value="no"
+                      checked={formData.attendance === 'no'}
+                      onChange={handleChange}
+                      className="mr-2"
+                    />
+                    Не смогу
+                  </label>
+                </div>
+                <button
+                  onClick={handleSubmit}
+                  className="w-full bg-pink-500 text-white p-3 rounded-lg hover:bg-pink-600 transition duration-300"
+                >
+                  Отправить
+                </button>
+              </div>
+            )}
+          </section>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<WeddingInvitation />, document.getElementById('root'));
+  </script>
+</body>
+</html>
