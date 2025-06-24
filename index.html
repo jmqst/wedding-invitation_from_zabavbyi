@@ -3,785 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Свадебное приглашение</title>
+    <title>Приглашение на Свадьбу | Анна и Дмитрий</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Иконки -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Применяем кастомные шрифты */
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
-            overflow-x: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #FDFBF8; /* Нежный кремовый фон */
+        }
+        .font-handwriting {
+            font-family: 'Marck Script', cursive;
         }
 
-        /* Анимация конверта */
-        .envelope-container {
+        /* --- Стили для нового прелоадера-медальона --- */
+        #preloader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
-            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 1s ease-out;
-        }
-
-        .envelope {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            cursor: pointer;
-            animation: envelope-float 3s ease-in-out infinite;
-        }
-
-        @keyframes envelope-float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .envelope-back {
-            position: absolute;
-            width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            border-radius: 8px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .envelope-front {
-            position: absolute;
-            width: 100%;
-            height: 50%;
-            bottom: 0;
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
-            border-radius: 0 0 8px 8px;
-            z-index: 2;
-        }
-
-        .envelope-flap {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            border-radius: 8px 8px 0 0;
-            transform-origin: bottom center;
-            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FDFBF8;
+            z-index: 100;
             cursor: pointer;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
         }
 
-        .envelope-flap::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
-            background: #fff;
+        .medallion {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 220px;
+            height: 220px;
+            border: 2px solid rgba(140, 104, 69, 0.4); /* Полупрозрачная граница */
             border-radius: 50%;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .envelope-flap::after {
-            content: '💕';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 16px;
-        }
-
-        .envelope.opened .envelope-flap {
-            transform: rotateX(-180deg);
-        }
-
-        .invitation-card {
-            position: absolute;
-            top: 20%;
-            left: 10%;
-            width: 80%;
-            height: 60%;
-            background: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform: translateY(100px) scale(0.8);
+            animation: fadeInAndPulse 3s ease-in-out forwards;
             opacity: 0;
-            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
-            z-index: 1;
         }
 
-        .envelope.opened .invitation-card {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-
-        .invitation-card h3 {
-            color: #c44569;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .invitation-card p {
-            color: #666;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .click-hint {
-            position: absolute;
-            bottom: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #c44569;
-            font-size: 14px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
-        }
-
-        /* Основной контент */
-        .main-content {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease-out;
-        }
-
-        .main-content.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .hero-section {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" text-anchor="middle" font-size="12" fill="%23ff9a9e" opacity="0.05">💕</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
-            pointer-events: none;
-        }
-
-        .couple-names {
-            font-size: 4rem;
-            color: #c44569;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            animation: fadeInUp 1s ease-out 0.5s both;
-        }
-
-        .wedding-date {
-            font-size: 1.5rem;
-            color: #666;
-            margin-bottom: 2rem;
-            animation: fadeInUp 1s ease-out 0.7s both;
-        }
-
-        .heart-divider {
-            font-size: 2rem;
-            color: #ff9a9e;
-            margin: 2rem 0;
-            animation: heartbeat 2s ease-in-out infinite;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        @keyframes fadeInUp {
-            from {
+        @keyframes fadeInAndPulse {
+            0% {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: scale(0.8);
             }
-            to {
+            50% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
             }
         }
-
-        /* Секция с фото */
-        .photos-section {
-            padding: 4rem 2rem;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(10px);
-        }
-
-        .photos-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .photo-frame {
-            background: #fff;
-            padding: 1rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transform: rotate(-2deg);
-            transition: transform 0.3s ease;
-        }
-
-        .photo-frame:nth-child(even) {
-            transform: rotate(2deg);
-        }
-
-        .photo-frame:hover {
-            transform: rotate(0deg) scale(1.05);
-        }
-
-        .photo-placeholder {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #c44569;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .photo-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .photo-caption {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-        }
-
-        /* RSVP секция */
-        .rsvp-section {
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-        }
-
-        .rsvp-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: rgba(255,255,255,0.95);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-
-        .rsvp-title {
-            text-align: center;
-            font-size: 2rem;
-            color: #c44569;
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #666;
-            font-weight: bold;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #ffeef8;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #ff9a9e;
-        }
-
-        .attendance-options {
-            display: flex;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .attendance-option {
-            flex: 1;
-            position: relative;
-        }
-
-        .attendance-option input[type="radio"] {
-            position: absolute;
+        
+        #preloader.hidden {
             opacity: 0;
+            visibility: hidden;
         }
-
-        .attendance-option label {
-            display: block;
-            padding: 1rem;
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        
+        /* --- Стили для основного контента --- */
+        #main-content {
+            opacity: 0;
+            transition: opacity 1.2s 0.2s ease-in-out;
         }
-
-        .attendance-option input[type="radio"]:checked + label {
-            background: #ff9a9e;
-            color: white;
-            border-color: #ff9a9e;
+        .fade-in {
+            opacity: 1 !important;
         }
-
-        .submit-btn {
-            width: 100%;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: transform 0.3s ease;
+        
+        /* Эффект для галереи */
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 0.5rem;
         }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
+        .gallery-item img {
+            transition: transform 0.5s ease;
         }
-
-        /* Список гостей */
-        .guests-list {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 2px solid #ffeef8;
-        }
-
-        .guests-title {
-            text-align: center;
-            color: #c44569;
-            margin-bottom: 1.5rem;
-        }
-
-        .guest-item {
-            background: #f8f9fa;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .guest-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .guest-status.attending {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .guest-status.not-attending {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        /* Адаптивность */
-        @media (max-width: 768px) {
-            body {
-                font-size: 16px;
-                line-height: 1.6;
-            }
-
-            .hero-section {
-                padding: 1rem;
-                min-height: 100vh;
-            }
-
-            .couple-names {
-                font-size: 2.5rem;
-                line-height: 1.2;
-                margin-bottom: 1.5rem;
-                padding: 0 1rem;
-            }
-
-            .wedding-date {
-                font-size: 1.3rem;
-                margin-bottom: 1.5rem;
-                padding: 0 1rem;
-            }
-
-            .hero-section p {
-                font-size: 1.1rem !important;
-                padding: 0 1rem;
-                margin: 1rem auto !important;
-                line-height: 1.8;
-            }
-            
-            .envelope {
-                width: 280px;
-                height: 187px;
-            }
-
-            .invitation-card {
-                padding: 15px;
-                font-size: 14px;
-            }
-
-            .invitation-card h3 {
-                font-size: 16px;
-                margin-bottom: 8px;
-            }
-
-            .invitation-card p {
-                font-size: 11px;
-                line-height: 1.4;
-            }
-
-            .click-hint {
-                font-size: 16px;
-                bottom: -40px;
-            }
-            
-            .photos-section {
-                padding: 2rem 1rem;
-            }
-
-            .photos-container {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .photo-frame {
-                padding: 0.8rem;
-            }
-
-            .photo-caption {
-                font-size: 14px;
-                margin-top: 0.5rem;
-            }
-
-            .rsvp-section {
-                padding: 2rem 1rem;
-            }
-
-            .rsvp-container {
-                padding: 2rem 1.5rem;
-                margin: 0 0.5rem;
-            }
-
-            .rsvp-title {
-                font-size: 1.8rem;
-                margin-bottom: 1.5rem;
-                line-height: 1.3;
-            }
-
-            .form-group {
-                margin-bottom: 1.2rem;
-            }
-
-            .form-group label {
-                font-size: 16px;
-                margin-bottom: 0.8rem;
-                color: #333;
-                font-weight: bold;
-            }
-
-            .form-group input, .form-group select {
-                padding: 1.2rem;
-                font-size: 16px;
-                border-width: 2px;
-                min-height: 50px;
-            }
-            
-            .attendance-options {
-                flex-direction: column;
-                gap: 0.8rem;
-            }
-
-            .attendance-option label {
-                padding: 1.2rem;
-                font-size: 16px;
-                font-weight: bold;
-                min-height: 50px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .submit-btn {
-                padding: 1.2rem;
-                font-size: 18px;
-                min-height: 55px;
-                margin-top: 1rem;
-            }
-
-            .guests-title {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-            }
-
-            .guest-item {
-                padding: 1rem;
-                margin-bottom: 0.8rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .guest-item div {
-                font-size: 16px;
-            }
-
-            .guest-item strong {
-                font-size: 18px;
-            }
-
-            .guest-item small {
-                font-size: 14px;
-                color: #666;
-            }
-
-            .guest-status {
-                padding: 0.5rem 1rem;
-                font-size: 14px;
-                align-self: flex-end;
-            }
-
-            /* Увеличение контрастности для мобильных */
-            .hero-section::before {
-                opacity: 0.3;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .couple-names {
-                font-size: 2rem;
-            }
-
-            .wedding-date {
-                font-size: 1.2rem;
-            }
-
-            .hero-section p {
-                font-size: 1rem !important;
-            }
-
-            .envelope {
-                width: 240px;
-                height: 160px;
-            }
-
-            .rsvp-container {
-                padding: 1.5rem 1rem;
-            }
-
-            .rsvp-title {
-                font-size: 1.6rem;
-            }
+        .gallery-item:hover img {
+            transform: scale(1.05);
         }
     </style>
 </head>
-<body>
-    <!-- Анимация конверта -->
-    <div class="envelope-container" id="envelopeContainer">
-        <div class="envelope" id="envelope">
-            <div class="envelope-back"></div>
-            <div class="envelope-front"></div>
-            <div class="envelope-flap"></div>
-            <div class="invitation-card">
-                <h3>Вы приглашены!</h3>
-                <p>Мы будем счастливы видеть вас на нашей свадьбе. Нажмите еще раз, чтобы продолжить.</p>
+<body class="text-gray-800">
+
+    <!-- Новый прелоадер с медальоном -->
+    <div id="preloader">
+        <div class="medallion">
+            <div class="text-center">
+                 <div class="flex items-center justify-center text-amber-800">
+                    <span class="font-handwriting text-7xl">J</span>
+                    <span class="text-4xl mx-2 text-amber-600">&</span>
+                    <span class="font-handwriting text-7xl">B</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-3 animate-pulse">Нажмите, чтобы войти</p>
             </div>
-            <div class="click-hint">Нажмите на конверт</div>
         </div>
     </div>
 
-    <!-- Основной контент -->
-    <div class="main-content" id="mainContent">
-        <!-- Главная секция -->
-        <section class="hero-section">
-            <h1 class="couple-names">Jay-Z & Beyoncé</h1>
-            <p class="wedding-date">15 августа 2025</p>
-            <div class="heart-divider">💕</div>
-            <p style="font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-                Дорогие друзья и родные! Мы приглашаем вас разделить с нами один из самых важных дней в нашей жизни. 
-                Ваше присутствие сделает этот день еще более особенным.
-            </p>
+
+    <!-- Основной контент сайта -->
+    <main id="main-content" class="w-full max-w-5xl mx-auto p-4 md:p-8">
+        
+        <!-- Шапка -->
+        <header class="text-center py-12">
+            <h1 class="font-handwriting text-6xl md:text-8xl text-amber-800">Jay-Z & Beyoncé </h1>
+            <p class="mt-4 text-lg md:text-xl text-gray-500">Приглашаем вас на нашу свадьбу!</p>
+            <div class="mt-8 text-2xl md:text-3xl text-amber-900 font-light">
+                24 | 08 | 2024
+            </div>
+        </header>
+
+        <!-- Разделитель -->
+        <div class="w-24 h-px bg-amber-700 mx-auto my-12"></div>
+
+        <!-- О нас и Фотография -->
+        <section class="flex flex-col md:flex-row items-center gap-8 md:gap-12 my-12">
+            <div class="w-full md:w-1/2">
+                <h2 class="font-handwriting text-5xl text-amber-800 mb-4">Наша история</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    Мы бесконечно рады поделиться с вами самым важным днем в нашей жизни! Этот день — начало нашей совместной истории, и мы хотим, чтобы вы стали ее частью. Ваша поддержка, улыбки и теплые слова сделают этот праздник по-настоящему волшебным. 
+                    <br><br>
+                    Приготовьтесь к вечеру, полному любви, смеха и танцев!
+                </p>
+            </div>
+            <div class="w-full md:w-1/2 rounded-lg overflow-hidden shadow-xl">
+                 <img src="jay.png" alt="" class="w-full h-auto object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x750/EADBC8/5D4037?text=Image+Not+Found';">
+            </div>
         </section>
 
-        <!-- Секция с фотографиями -->
-        <section class="photos-section">
-            <div class="photos-container">
-                <div class="photo-frame">
-                    <!-- СПОСОБ 1: Замените src на путь к вашему фото -->
-                    <img src="ja1.jpg" alt="Наша история" class="photo-img" style="display: block;">
-                    <!-- Пока фото нет, показывается заглушка -->
+        <!-- Разделитель -->
+        <div class="w-24 h-px bg-amber-700 mx-auto my-12"></div>
+
+        <!-- Информация о мероприятии -->
+        <section id="details" class="text-center my-12">
+            <h2 class="font-handwriting text-5xl text-amber-800 mb-8">Детали торжества</h2>
+            <div class="flex flex-col md:flex-row justify-center gap-8 md:gap-16">
+                <div class="info-block">
+                    <i class="fas fa-calendar-check text-4xl text-amber-700 mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-1">Церемония</h3>
+                    <p class="text-gray-600">Суббота, 24 августа 2024<br>в 15:00</p>
                 </div>
-                <div class="photo-frame">
-                    <img src="ja2.jpg" alt="Первое свидание" class="photo-img" style="display: block;">
+                <div class="info-block">
+                    <i class="fas fa-glass-cheers text-4xl text-amber-700 mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-1">Банкет</h3>
+                    <p class="text-gray-600">Начало в 17:00</p>
                 </div>
-                <div class="photo-frame">
-                    <img src="ja3.jpg" alt="Предложение" class="photo-img" style="display: block;">
-                </div>
-                <div class="photo-frame">
-                    <img src="ja4.jpg" alt="Помолвка" class="photo-img" style="display: block;">
+                <div class="info-block">
+                    <i class="fas fa-map-marker-alt text-4xl text-amber-700 mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-1">Место проведения</h3>
+                    <p class="text-gray-600">Ресторан "Bloom Room"<br>ул. Туран, 52, г. Астана</p>
                 </div>
             </div>
         </section>
 
-        <!-- RSVP секция -->
-        <section class="rsvp-section">
-            <div class="rsvp-container">
-                <h2 class="rsvp-title">Подтвердите участие</h2>
-                <form id="rsvpForm">
-                    <div class="form-group">
-                        <label for="guestName">Ваше имя:</label>
-                        <input type="text" id="guestName" name="guestName" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="guestPhone">Номер телефона:</label>
-                        <input type="tel" id="guestPhone" name="guestPhone" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Сможете ли вы присутствовать?</label>
-                        <div class="attendance-options">
-                            <div class="attendance-option">
-                                <input type="radio" id="attending" name="attendance" value="attending" required>
-                                <label for="attending">Буду! 💕</label>
-                            </div>
-                            <div class="attendance-option">
-                                <input type="radio" id="notAttending" name="attendance" value="not-attending" required>
-                                <label for="notAttending">К сожалению, не смогу 😔</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">Отправить ответ</button>
-                </form>
-
-                <!-- Список гостей -->
-                <div class="guests-list">
-                    <h3 class="guests-title">Подтвердили участие:</h3>
-                    <div id="guestsList"></div>
-                </div>
+        <!-- Фотогалерея -->
+        <section id="gallery" class="my-16">
+            <h2 class="font-handwriting text-5xl text-amber-800 text-center mb-8">Наши моменты</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="gallery-item shadow-lg"><img src="ja1.jpg" alt="Фотография 1" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/EADBC8/5D4037?text=Image';"></div>
+                <div class="gallery-item shadow-lg"><img src="ja2.jpg" alt="Фотография 2" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/DACAB8/5D4037?text=Image';"></div>
+                <div class="gallery-item shadow-lg"><img src="ja3.jpg" alt="Фотография 3" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/F3EBE3/5D4037?text=Image';"></div>
+                <div class="gallery-item shadow-lg"><img src="ja4.jpg" alt="Фотография 4" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/C3B091/5D4037?text=Image';"></div>
             </div>
         </section>
-    </div>
+
+        <!-- Форма RSVP -->
+        <section id="rsvp" class="bg-amber-50 rounded-lg p-8 md:p-12 my-16 shadow-lg">
+            <h2 class="font-handwriting text-5xl text-amber-800 text-center mb-8">Подтвердите присутствие</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Пожалуйста, сообщите нам о своем решении до 1 августа 2024 года. <br>Это очень поможет нам в организации праздника!</p>
+            <form id="rsvp-form" class="max-w-xl mx-auto">
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 mb-2">Ваше имя и фамилия</label>
+                    <input type="text" id="name" name="name" class="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" required>
+                </div>
+                <div class="mb-6">
+                    <label for="phone" class="block text-gray-700 mb-2">Контактный номер (необязательно)</label>
+                    <input type="tel" id="phone" name="phone" class="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+                <div class="mb-6">
+                    <p class="block text-gray-700 mb-2">Вы придете на нашу свадьбу?</p>
+                    <div class="flex items-center gap-6">
+                        <label class="flex items-center">
+                            <input type="radio" name="attendance" value="yes" class="h-5 w-5 text-amber-600 focus:ring-amber-500 border-gray-300" required>
+                            <span class="ml-2 text-gray-700">С радостью приду / придем!</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="attendance" value="no" class="h-5 w-5 text-amber-600 focus:ring-amber-500 border-gray-300">
+                            <span class="ml-2 text-gray-700">К сожалению, не смогу / не сможем</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="bg-amber-700 text-white font-bold py-3 px-8 rounded-full hover:bg-amber-800 transition duration-300 shadow-md">Отправить ответ</button>
+                </div>
+            </form>
+             <div id="form-confirmation" class="text-center mt-6 text-green-700 font-semibold" style="display: none;">
+                Спасибо! Ваш ответ получен.
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-8">
+            <p class="font-handwriting text-3xl text-amber-800">С нетерпением ждем вас!</p>
+            <p class="text-gray-500 mt-2">Jay-Z & Beyoncé</p>
+        </footer>
+
+    </main>
 
     <script>
-        // Управление анимацией конверта
-        const envelope = document.getElementById('envelope');
-        const envelopeContainer = document.getElementById('envelopeContainer');
-        const mainContent = document.getElementById('mainContent');
-        let envelopeOpened = false;
-        let animationComplete = false;
+        document.addEventListener('DOMContentLoaded', () => {
+            const preloader = document.getElementById('preloader');
+            const mainContent = document.getElementById('main-content');
+            const rsvpForm = document.getElementById('rsvp-form');
+            const formConfirmation = document.getElementById('form-confirmation');
 
-        envelope.addEventListener('click', function() {
-            if (!envelopeOpened) {
-                envelope.classList.add('opened');
-                envelopeOpened = true;
+            // --- Логика нового прелоадера ---
+            preloader.addEventListener('click', () => {
+                // Добавляем класс, чтобы скрыть прелоадер
+                preloader.classList.add('hidden');
                 
-                // Скрыть подсказку
-                document.querySelector('.click-hint').style.display = 'none';
-            } else if (!animationComplete) {
-                // Второй клик - переход к основному контенту
-                envelopeContainer.style.opacity = '0';
+                // Показываем основной контент после того, как прелоадер исчезнет
                 setTimeout(() => {
-                    envelopeContainer.style.display = 'none';
-                    mainContent.classList.add('visible');
-                    animationComplete = true;
-                }, 1000);
-            }
-        });
-
-        // Управление формой RSVP
-        const rsvpForm = document.getElementById('rsvpForm');
-        const guestsList = document.getElementById('guestsList');
-        let guests = [];
-
-        rsvpForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('guestName').value;
-            const phone = document.getElementById('guestPhone').value;
-            const attendance = document.querySelector('input[name="attendance"]:checked').value;
-            
-            // Добавить гостя в список
-            const guest = {
-                name: name,
-                phone: phone,
-                attendance: attendance
-            };
-            
-            guests.push(guest);
-            updateGuestsList();
-            
-            // Очистить форму
-            rsvpForm.reset();
-            
-            // Показать сообщение об успехе
-            alert('Спасибо за ваш ответ! ❤️');
-        });
-
-        function updateGuestsList() {
-            guestsList.innerHTML = '';
-            
-            guests.forEach(guest => {
-                const guestItem = document.createElement('div');
-                guestItem.className = 'guest-item';
-                
-                const statusClass = guest.attendance === 'attending' ? 'attending' : 'not-attending';
-                const statusText = guest.attendance === 'attending' ? 'Придет' : 'Не сможет';
-                
-                guestItem.innerHTML = `
-                    <div>
-                        <strong>${guest.name}</strong><br>
-                        <small>${guest.phone}</small>
-                    </div>
-                    <span class="guest-status ${statusClass}">${statusText}</span>
-                `;
-                
-                guestsList.appendChild(guestItem);
+                    mainContent.classList.add('fade-in');
+                }, 100); // Небольшая задержка для плавности
             });
-        }
+
+            // --- Логика формы RSVP ---
+            rsvpForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Предотвращаем стандартную отправку формы
+
+                const formData = new FormData(rsvpForm);
+                const name = formData.get('name');
+                const attendance = formData.get('attendance');
+                
+                // Здесь вы можете отправить данные на сервер или в Google Sheets
+                // Для примера просто выводим в консоль
+                console.log('Новый ответ:');
+                console.log(`Имя: ${name}`);
+                console.log(`Присутствие: ${attendance === 'yes' ? 'Да' : 'Нет'}`);
+                console.log(`Телефон: ${formData.get('phone')}`);
+
+                // Показываем сообщение с подтверждением
+                formConfirmation.style.display = 'block';
+                
+                // Сбрасываем форму
+                rsvpForm.reset();
+
+                // Скрываем сообщение через несколько секунд
+                setTimeout(() => {
+                    formConfirmation.style.display = 'none';
+                }, 4000);
+            });
+        });
     </script>
+
 </body>
 </html>
