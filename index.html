@@ -119,10 +119,6 @@
             opacity: 0;
             transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
             z-index: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
         .envelope.opened .invitation-card {
@@ -134,15 +130,12 @@
             color: #c44569;
             font-size: 18px;
             margin-bottom: 10px;
-            font-weight: bold;
         }
 
         .invitation-card p {
-            color: #333;
+            color: #666;
             font-size: 12px;
             line-height: 1.4;
-            font-weight: 500;
-            text-align: center;
         }
 
         .click-hint {
@@ -190,7 +183,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" text-anchor="middle" font-size="12" fill="%23ff9a9e" opacity="0.05">💕</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" text-anchor="middle" font-size="12" fill="%23ff9a9e" opacity="0.1">💕</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
             pointer-events: none;
         }
 
@@ -209,17 +202,11 @@
             animation: fadeInUp 1s ease-out 0.7s both;
         }
 
-        .hero-description {
-            font-size: 1.2rem;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-top: 2rem;
+        .heart-divider {
+            font-size: 2rem;
+            color: #ff9a9e;
+            margin: 2rem 0;
+            animation: heartbeat 2s ease-in-out infinite;
         }
 
         @keyframes heartbeat {
@@ -281,14 +268,6 @@
             justify-content: center;
             color: #c44569;
             font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .photo-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
             margin-bottom: 1rem;
         }
 
@@ -436,221 +415,21 @@
 
         /* Адаптивность */
         @media (max-width: 768px) {
-            body {
-                font-size: 16px;
-                line-height: 1.6;
-            }
-
-            .hero-section {
-                padding: 1rem;
-                min-height: 100vh;
-            }
-
             .couple-names {
                 font-size: 2.5rem;
-                line-height: 1.2;
-                margin-bottom: 1.5rem;
-                padding: 0 1rem;
-            }
-
-            .wedding-date {
-                font-size: 1.3rem;
-                margin-bottom: 1.5rem;
-                padding: 0 1rem;
-            }
-
-            .hero-description {
-                font-size: 1.1rem !important;
-                padding: 1.2rem !important;
-                margin: 1.5rem 1rem !important;
-                color: #222 !important;
-                background: rgba(255, 255, 255, 0.95) !important;
-                line-height: 1.7 !important;
-                text-align: center !important;
-                border: 2px solid rgba(255, 154, 158, 0.3);
-            }
-
-            .hero-section p {
-                font-size: 1.1rem !important;
-                padding: 0 1rem;
-                margin: 1rem auto !important;
-                line-height: 1.8;
             }
             
             .envelope {
-                width: 280px;
-                height: 187px;
-            }
-
-            .invitation-card {
-                padding: 12px;
-                font-size: 12px;
-                top: 25%;
-                left: 8%;
-                width: 84%;
-                height: 50%;
-            }
-
-            .invitation-card h3 {
-                font-size: 14px;
-                margin-bottom: 6px;
-                color: #c44569;
-                font-weight: bold;
-            }
-
-            .invitation-card p {
-                font-size: 10px;
-                line-height: 1.3;
-                color: #333;
-                font-weight: 500;
-            }
-
-            .click-hint {
-                font-size: 16px;
-                bottom: -40px;
+                width: 250px;
+                height: 167px;
             }
             
-            .photos-section {
-                padding: 2rem 1rem;
-            }
-
             .photos-container {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .photo-frame {
-                padding: 0.8rem;
-            }
-
-            .photo-caption {
-                font-size: 14px;
-                margin-top: 0.5rem;
-            }
-
-            .rsvp-section {
-                padding: 2rem 1rem;
-            }
-
-            .rsvp-container {
-                padding: 2rem 1.5rem;
-                margin: 0 0.5rem;
-            }
-
-            .rsvp-title {
-                font-size: 1.8rem;
-                margin-bottom: 1.5rem;
-                line-height: 1.3;
-            }
-
-            .form-group {
-                margin-bottom: 1.2rem;
-            }
-
-            .form-group label {
-                font-size: 16px;
-                margin-bottom: 0.8rem;
-                color: #333;
-                font-weight: bold;
-            }
-
-            .form-group input, .form-group select {
-                padding: 1.2rem;
-                font-size: 16px;
-                border-width: 2px;
-                min-height: 50px;
             }
             
             .attendance-options {
                 flex-direction: column;
-                gap: 0.8rem;
-            }
-
-            .attendance-option label {
-                padding: 1.2rem;
-                font-size: 16px;
-                font-weight: bold;
-                min-height: 50px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .submit-btn {
-                padding: 1.2rem;
-                font-size: 18px;
-                min-height: 55px;
-                margin-top: 1rem;
-            }
-
-            .guests-title {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-            }
-
-            .guest-item {
-                padding: 1rem;
-                margin-bottom: 0.8rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .guest-item div {
-                font-size: 16px;
-            }
-
-            .guest-item strong {
-                font-size: 18px;
-            }
-
-            .guest-item small {
-                font-size: 14px;
-                color: #666;
-            }
-
-            .guest-status {
-                padding: 0.5rem 1rem;
-                font-size: 14px;
-                align-self: flex-end;
-            }
-
-            /* Увеличение контрастности для мобильных */
-            .hero-section::before {
-                opacity: 0.3;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .couple-names {
-                font-size: 2rem;
-            }
-
-            .wedding-date {
-                font-size: 1.2rem;
-            }
-
-            .hero-description {
-                font-size: 1rem !important;
-                padding: 1rem !important;
-                margin: 1rem 0.5rem !important;
-                color: #222 !important;
-                background: rgba(255, 255, 255, 0.95) !important;
-                line-height: 1.6 !important;
-                border: 2px solid rgba(255, 154, 158, 0.3);
-            }
-
-            .envelope {
-                width: 240px;
-                height: 160px;
-            }
-
-            .rsvp-container {
-                padding: 1.5rem 1rem;
-            }
-
-            .rsvp-title {
-                font-size: 1.6rem;
             }
         }
     </style>
@@ -676,7 +455,7 @@
             <h1 class="couple-names">Jay-Z & Beyoncé</h1>
             <p class="wedding-date">15 августа 2025</p>
             <div class="heart-divider">💕</div>
-            <p class="hero-description">
+            <p style="font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto; line-height: 1.6;">
                 Дорогие друзья и родные! Мы приглашаем вас разделить с нами один из самых важных дней в нашей жизни. 
                 Ваше присутствие сделает этот день еще более особенным.
             </p>
